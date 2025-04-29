@@ -1,6 +1,5 @@
 import { forwardRef, HTMLAttributes } from "react"
 
-// 카드 컴포넌트
 export const Card = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
   <div ref={ref} className={`rounded-lg border bg-card text-card-foreground shadow-sm ${className}`} {...props} />
 ))
@@ -18,8 +17,7 @@ export const CardTitle = forwardRef<HTMLHeadingElement, HTMLAttributes<HTMLDivEl
 )
 CardTitle.displayName = "CardTitle"
 
-const CardContent = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
-  <div ref={ref} className={`p-6 pt-0 ${className}`} {...props} />
-))
-export default CardContent
+export const CardContent = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => <div ref={ref} className={`p-6 pt-0 ${className}`} {...props} />,
+)
 CardContent.displayName = "CardContent"
