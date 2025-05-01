@@ -1,10 +1,32 @@
-import { defineConfig } from "vite"
+import { defineConfig, Plugin } from "vite"
 import react from "@vitejs/plugin-react"
 import * as path from "node:path"
 
-// https://vite.dev/config/
+// API 경로를 빌드 시에만 치환하는 플러그인
+function apiReplace(): Plugin {
+  return {
+    name: "api-replace",
+    apply: "build",
+    transform(code, id) {
+      if (!id.match(/\.(ts|js|tsx|jsx)$/)) return
+      return code.replace(
+        /(['"`])\/api([^"'`\\]*)\1/g,
+        (_, quote, apiPath) => `${quote}https://dummyjson.com${apiPath}${quote}`,
+      )
+    },
+  }
+}
+
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), apiReplace()],
+  base: process.env.NODE_ENV === "production" ? "/front_5th_chapter2-3/" : "/",
+  build: {
+    rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, "index.html"),
+      },
+    },
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
@@ -19,7 +41,6 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        // target: 'https://jsonplaceholder.typicode.com',
         target: "https://dummyjson.com",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
